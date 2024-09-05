@@ -21,7 +21,6 @@ func NewBookController(bookService service.BookService) *BookController {
 func (controller *BookController) Create(write http.ResponseWriter, requests *http.Request, params httprouter.Params) {
 	bookCreateRequest := request.BookCreateRequest{}
 	helper.ReadRequestBody(requests, &bookCreateRequest)
-
 	controller.BookService.Create(requests.Context(), bookCreateRequest)
 
 	webResponse := response.WebResponse{
@@ -81,4 +80,17 @@ func (controller *BookController) FindAll(write http.ResponseWriter, request *ht
 }
 
 func (controller *BookController) FindById(write http.ResponseWriter, request *http.Request, params httprouter.Params) {
+	bookId := params.ByName("id")
+	id, err := strconv.Atoi(bookId)
+	helper.PanicIfError(err)
+
+	result := controller.BookService.FindById(request.Context(), id)
+
+	webResponse := response.WebResponse{
+		Code:   200,
+		Status: "success",
+		Data:   result,
+	}
+
+	helper.WriteResponseBody(write, webResponse)
 }

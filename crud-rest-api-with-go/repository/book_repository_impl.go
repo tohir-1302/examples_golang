@@ -23,7 +23,7 @@ func (b *BookRepositoryImpl) Delete(ctx context.Context, bookId int) {
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
-	SQL := "DELETE FROM books WHERE book_id = ?"
+	SQL := "DELETE FROM books WHERE id = $1"
 
 	_, errExec := tx.ExecContext(ctx, SQL, bookId)
 	helper.PanicIfError(errExec)
@@ -57,7 +57,7 @@ func (b *BookRepositoryImpl) FindById(ctx context.Context, id int) (model.Book, 
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
-	SQL := "SELECT id, name FROM books WHERE id = ?"
+	SQL := "SELECT id, name FROM books WHERE id = $1"
 
 	result, errExec := tx.QueryContext(ctx, SQL, id)
 	helper.PanicIfError(errExec)
@@ -80,9 +80,8 @@ func (b *BookRepositoryImpl) Save(ctx context.Context, book model.Book) {
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
-	SQL := "INSERT INTO books (name) VALUES (?)"
-
-	_, errExec := tx.ExecContext(ctx, SQL, book.Name)
+	SQL := "INSERT INTO books (name) VALUES ($1)"
+	_, errExec := tx.QueryContext(ctx, SQL, book.Name)
 	helper.PanicIfError(errExec)
 }
 
@@ -91,7 +90,7 @@ func (b *BookRepositoryImpl) Update(ctx context.Context, book model.Book) {
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
-	SQL := "UPDATE books SET name = ? WHERE id = ?"
+	SQL := "UPDATE books SET name = $1 WHERE id = $2"
 	_, errExec := tx.ExecContext(ctx, SQL, book.Name, book.Id)
 	helper.PanicIfError(errExec)
 }
