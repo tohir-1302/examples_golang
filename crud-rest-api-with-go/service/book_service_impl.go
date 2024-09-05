@@ -23,6 +23,7 @@ func (b *BookServiceImpl) Create(ctx context.Context, request request.BookCreate
 	book := model.Book{
 		Name: request.Name,
 	}
+
 	b.BookRepository.Save(ctx, book)
 }
 
