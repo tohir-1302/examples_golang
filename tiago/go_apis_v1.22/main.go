@@ -7,5 +7,3 @@ func main() {
 	err := server.Run()
 	fmt.Println(err)
 }
-
-// video
